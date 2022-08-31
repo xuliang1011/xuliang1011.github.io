@@ -26,7 +26,7 @@
 
   
 
-  <title>Hello World | 百无禁忌</title>
+  <title>百无禁忌</title>
 
   
 
@@ -99,11 +99,11 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">Hello World</h1>
+          <h1 class="title-wrap"></h1>
           <h2 class="title-sub-wrap">
             <strong>徐亮</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-08-31T15:42:08.059Z" itemprop="datePublished">2022-08-31</time>
+            <time  class="article-date" datetime="2022-08-31T17:59:16.953Z" itemprop="datePublished">2022-09-01</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -132,19 +132,64 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+        <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式，是一种思想，是一种常用的软件设计模式。</p>
+<ul>
+<li><p><strong>单例模式的含义</strong></p>
+</li>
+<li><p>单例模式，顾名思义就是只有一个实例，并且她自己负责创建自己的对象，这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。下面我们来看下有哪几种实现方式吧。</p>
+<p>核心代码：构造方法私有化，private。</p>
+<h4 id="单例模式的两种实现方式"><a href="#单例模式的两种实现方式" class="headerlink" title="单例模式的两种实现方式"></a>单例模式的两种实现方式</h4><p>饿汉式，顾名思义，就是“比较勤”，实例在初始化的时候就已经建好了，不管你有没有用到，都先建好了再说。好处是没有线程安全的问题，坏处是浪费内存空间。</p>
+<p>设计步骤：<br>1.定义一个类，把构造器私有。</p>
+<p>2.定义一个静态变量存储一个对象</p>
+<pre><code class="java">public class SingleInstanceDemo01 &#123;
+    public static void main(String[] args) &#123;
+        SingleInstance01 singleInstance01=SingleInstance01.instance01;
+        SingleInstance01 singleInstance02=SingleInstance01.instance01;
+        System.out.println(singleInstance01==singleInstance02);
+    &#125;
+&#125;
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+public class SingleInstance01 &#123;
+    //初始化时创建对象
+    public static SingleInstance01 instance01=new SingleInstance01();
+    //私有化构造器
+    private SingleInstance01()&#123;
+        System.out.println(&quot;创建了一个对象&quot;);
+    &#125;
+&#125;
+</code></pre>
+<p>懒汉式，顾名思义就是实例在用到的时候才去创建，“比较懒”，用的时候才去检查有没有实例，如果有则返</p>
+<p>回，没有则新建。有线程安全和线程不安全两种写法，区别就是synchronized关键字。</p>
+<p>设计步骤：</p>
+<p>1.定义一个类，把构造器私有。</p>
+<p>2.定义一个静态变量存储一个对象。</p>
+<p>3.提供一个返回单例对象的方法。</p>
+</li>
+</ul>
+<pre><code class="java">public class SingleInstanceDemo02 &#123;
+    public static void main(String[] args) &#123;
+        SingleInstance02 singleInstance01=SingleInstance02.getInstance02();
+        SingleInstance02 singleInstance02=SingleInstance02.getInstance02();
+        System.out.println(singleInstance01==singleInstance02);
+    &#125;
+&#125;
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+public class SingleInstance02 &#123;
+    //初始化
+    public static SingleInstance02 instance02;
+    //私有化构造器
+    private SingleInstance02()&#123;
+        System.out.println(&quot;创建了一个对象&quot;);
+    &#125;
+    //提供一个方法返回一个单例对象
+    public synchronized static SingleInstance02 getInstance02()&#123;
+        if (instance02 == null)&#123;
+            instance02=new SingleInstance02();//如何为空，就创建对象
+        &#125;
+        return instance02;
+    &#125;
+&#125;
+</code></pre>
 
       </section>
 
@@ -152,20 +197,20 @@
       
         <nav class="article-nav">
           
+          
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
     <div class="card-text">
       
-        <a href="/2022/09/01/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">(no title)</h2>
+        <a href="/2022/08/31/hello-world/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">Hello World</h2>
         </a>
       
-      <div class="card-text--row">Newer</div>
+      <div class="card-text--row">Older</div>
     </div>
   </article>
 </div>
-          
           
         </nav>
       
