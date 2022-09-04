@@ -103,7 +103,7 @@
           <h2 class="title-sub-wrap">
             <strong>徐亮</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-08-31T17:59:16.953Z" itemprop="datePublished">2022-09-01</time>
+            <time  class="article-date" datetime="2022-09-04T06:36:02.292Z" itemprop="datePublished">2022-09-04</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -132,64 +132,121 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式，是一种思想，是一种常用的软件设计模式。</p>
-<ul>
-<li><p><strong>单例模式的含义</strong></p>
-</li>
-<li><p>单例模式，顾名思义就是只有一个实例，并且她自己负责创建自己的对象，这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。下面我们来看下有哪几种实现方式吧。</p>
-<p>核心代码：构造方法私有化，private。</p>
-<h4 id="单例模式的两种实现方式"><a href="#单例模式的两种实现方式" class="headerlink" title="单例模式的两种实现方式"></a>单例模式的两种实现方式</h4><p>饿汉式，顾名思义，就是“比较勤”，实例在初始化的时候就已经建好了，不管你有没有用到，都先建好了再说。好处是没有线程安全的问题，坏处是浪费内存空间。</p>
-<p>设计步骤：<br>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象</p>
-<pre><code class="java">public class SingleInstanceDemo01 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance01 singleInstance01=SingleInstance01.instance01;
-        SingleInstance01 singleInstance02=SingleInstance01.instance01;
-        System.out.println(singleInstance01==singleInstance02);
+        <h4 id="如何创建动态代理对象"><a href="#如何创建动态代理对象" class="headerlink" title="如何创建动态代理对象"></a>如何创建动态代理对象</h4><h4 id="什么是代理"><a href="#什么是代理" class="headerlink" title="什么是代理"></a>什么是代理</h4><p>从字面意思来看，代理比较好理解，无非就是代为处理的意思，也就是一个增强方法的工具类。</p>
+<pre><code class="java">public interface Service &#123;
+    void doService();
+    void doOther();
+&#125;
+
+
+
+public class ServiceImpl implements Service &#123;
+    @Override
+    public void doService() &#123;
+        System.out.println(&quot;执行业务方法doService&quot;);
+    &#125;
+
+    @Override
+    public void doOther() &#123;
+        System.out.println(&quot;执行业务方法doOther&quot;);
     &#125;
 &#125;
 
-public class SingleInstance01 &#123;
-    //初始化时创建对象
-    public static SingleInstance01 instance01=new SingleInstance01();
-    //私有化构造器
-    private SingleInstance01()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
+
+public class Text &#123;
+    public static void main(String[] args) &#123;
+        //调用doService，doOther
+        Service service=new ServiceImpl();
+        service.doService();
+        System.out.println(&quot;---------------------&quot;);
+        service.doOther();
     &#125;
 &#125;
 </code></pre>
-<p>懒汉式，顾名思义就是实例在用到的时候才去创建，“比较懒”，用的时候才去检查有没有实例，如果有则返</p>
-<p>回，没有则新建。有线程安全和线程不安全两种写法，区别就是synchronized关键字。</p>
-<p>设计步骤：</p>
-<p>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象。</p>
-<p>3.提供一个返回单例对象的方法。</p>
-</li>
-</ul>
-<pre><code class="java">public class SingleInstanceDemo02 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance02 singleInstance01=SingleInstance02.getInstance02();
-        SingleInstance02 singleInstance02=SingleInstance02.getInstance02();
-        System.out.println(singleInstance01==singleInstance02);
+<p>我举一个很简单的一个例子，上面就是我们常用写一个方法的方式，要是这个方法我们需要给它加功能比如加个打印日志和事务，我们应该怎么做呢？最直观就是我们直接在Service方法里面加。</p>
+<pre><code class="java">public void doService() &#123;
+    System.out.println(&quot;方法的执行时间：&quot;+new Date());
+    System.out.println(&quot;执行业务方法doService&quot;);
+
+    //方法最后提交事务
+    System.out.println(&quot;方法执行完毕提交事务。&quot;);
+&#125;
+</code></pre>
+<p>但这样的话我们就改变了原先代码的程序逻辑。我们所加的功能和原先代码的业务功能是无关的。所以doService方法就会显得特别乱。当然我们也可以这样做，写一个工具类去实现上面的两个那功能。</p>
+<pre><code class="java">public class ServiceTools &#123;
+    public static void doLog()&#123;
+        System.out.println(&quot;方法的执行时间：&quot;+new Date());
+    &#125;
+    public static void doTrans()&#123;
+        System.out.println(&quot;方法执行完毕提交事务。&quot;); 
     &#125;
 &#125;
 
-public class SingleInstance02 &#123;
-    //初始化
-    public static SingleInstance02 instance02;
-    //私有化构造器
-    private SingleInstance02()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
+
+public class ServiceImpl implements Service &#123;
+    @Override
+       public void doService() &#123;
+//        System.out.println(&quot;方法的执行时间：&quot;+new Date());
+        ServiceTools.doLog();
+        System.out.println(&quot;执行业务方法doService&quot;);
+
+        //方法最后提交事务
+//        System.out.println(&quot;方法执行完毕提交事务。&quot;);
+        ServiceTools.doTrans();
     &#125;
-    //提供一个方法返回一个单例对象
-    public synchronized static SingleInstance02 getInstance02()&#123;
-        if (instance02 == null)&#123;
-            instance02=new SingleInstance02();//如何为空，就创建对象
+&#125;
+</code></pre>
+<p>它比之前就简洁了一些，只有方法的调用了，但是还是不够简洁，修改也不方便，以及很多重复的代码。</p>
+<p>而我们想要做的更好，在原有基础上，不修改ServiceImpl类里面的任何代码，让它也能去增加输出日志和事务这两个功能。所以这就要用到我们的动态代理了。</p>
+<h6 id="那么动态代理怎么使用了"><a href="#那么动态代理怎么使用了" class="headerlink" title="那么动态代理怎么使用了"></a>那么动态代理怎么使用了</h6><p>划重点，我理解的动态代理，它就是一个工具类，只要你适应它的规则自然就轻车熟路了。</p>
+<p>jdk动态代理实现步骤:<br>1.创建目标类，SomeServiceImpl目标类，给它的doService，doother增加输出时间，事务。</p>
+<p>2.创建InvocationHandler接口的实现类，在这个类实现给目标方法增加功能。</p>
+<p>3.使用jdk中类proxy ，创建代理对象。实现创建对象的能力。</p>
+<p>现在我们进行第二步：</p>
+<pre><code class="java">public class MyInvocationHandler implements InvocationHandler &#123;
+    //目标对象
+        private Object target;//即我们得ServiceImpl类
+        public MyInvocationHandler(Object target)&#123;
+            this.target=target;
         &#125;
-        return instance02;
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;
+        //通过代理对象执行方法时，会调用执行这个invoke ()
+        Object invoke=null;
+        ServiceTools.doLog();
+        //执行目标类方法，通过Method类实现
+        invoke = method.invoke(target, args);
+        ServiceTools.doTrans();
+        return invoke;
     &#125;
 &#125;
 </code></pre>
+<p>第三步：</p>
+<pre><code class="Java">public class Text &#123;
+    public static void main(String[] args) &#123;
+//        调用doService，doOther
+//        Service service=new ServiceImpl();
+//        service.doService();
+//        System.out.println(&quot;---------------------&quot;);
+//        service.doOther();
+        //使用jdk的Proxy创建代理对象
+        // 创建目标对象
+        Service target=new ServiceImpl();
+        //创建InvocationHandler对象
+        InvocationHandler invocationHandler=new MyInvocationHandler(target);
+        //使用Proxy创建代理
+        Service proxy = (Service) Proxy.newProxyInstance(
+                target.getClass().getClassLoader(),//第一个参数固定的，目标类得类加载器，可以用反射机制获取
+                target.getClass().getInterfaces(),//第二个参数，目标类实现了什么接口
+                invocationHandler);//第三个参数，代理对象要执行的功能
+        //通过代理执行方法，会调用handler中的invoke ( )
+        proxy.doOther();
+    &#125;
+&#125;
+</code></pre>
+<h5 id="invoke方法的第一个参数proxy到底有什么作用？"><a href="#invoke方法的第一个参数proxy到底有什么作用？" class="headerlink" title="invoke方法的第一个参数proxy到底有什么作用？"></a>invoke方法的第一个参数proxy到底有什么作用？</h5><p>这个问题其实也好理解，如果你的接口中有方法需要返回自身，如果在invoke中没有传入这个参数，将导致实例无法正常返回。在这种场景中，proxy的用途就表现出来了。简单来说，这其实就是最近非常火的链式编程的一种应用实现。</p>
+<h5 id="动态代理到底有什么用？"><a href="#动态代理到底有什么用？" class="headerlink" title="动态代理到底有什么用？"></a>动态代理到底有什么用？</h5><p>学习任何一门技术，一定要问一问自己，这到底有什么用。其实，在这篇文章的讲解过程中，我们已经说出了它的主要用途。你发现没，使用动态代理我们居然可以在不改变源码的情况下，直接在方法中插入自定义逻辑。这有点不太符合我们的一条线走到底的编程逻辑，这种编程模型有一个专业名称叫 <a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://baike.baidu.com/item/AOP/1332219">AOP</a>。所谓的AOP，就像刀一样，抓住时机，趁机插入。</p>
+<p>以上就是我理解的动态代理，要是有错误希望大家指出，不足之处望大家谅解，谢谢大家。</p>
 
       </section>
 
@@ -202,7 +259,7 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/09/04/java%E5%A4%9A%E6%80%81%E5%AE%9E%E4%BE%8B/" itemprop="url">
+        <a href="/2022/09/04/%E4%BB%80%E4%B9%88%E6%98%AFaop/" itemprop="url">
           <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
@@ -217,8 +274,8 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/08/31/hello-world/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">Hello World</h2>
+        <a href="/2022/09/04/%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%EF%BC%8C%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%E7%9A%84%E5%8C%BA%E5%88%AB/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
       <div class="card-text--row">Older</div>

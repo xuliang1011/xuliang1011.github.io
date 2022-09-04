@@ -103,7 +103,7 @@
           <h2 class="title-sub-wrap">
             <strong>徐亮</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-08-31T17:59:16.953Z" itemprop="datePublished">2022-09-01</time>
+            <time  class="article-date" datetime="2022-09-04T06:36:02.292Z" itemprop="datePublished">2022-09-04</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -132,62 +132,110 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式，是一种思想，是一种常用的软件设计模式。</p>
-<ul>
-<li><p><strong>单例模式的含义</strong></p>
-</li>
-<li><p>单例模式，顾名思义就是只有一个实例，并且她自己负责创建自己的对象，这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。下面我们来看下有哪几种实现方式吧。</p>
-<p>核心代码：构造方法私有化，private。</p>
-<h4 id="单例模式的两种实现方式"><a href="#单例模式的两种实现方式" class="headerlink" title="单例模式的两种实现方式"></a>单例模式的两种实现方式</h4><p>饿汉式，顾名思义，就是“比较勤”，实例在初始化的时候就已经建好了，不管你有没有用到，都先建好了再说。好处是没有线程安全的问题，坏处是浪费内存空间。</p>
-<p>设计步骤：<br>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象</p>
-<pre><code class="java">public class SingleInstanceDemo01 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance01 singleInstance01=SingleInstance01.instance01;
-        SingleInstance01 singleInstance02=SingleInstance01.instance01;
-        System.out.println(singleInstance01==singleInstance02);
+        <h5 id="接口和抽象类，接口和抽象类的区别"><a href="#接口和抽象类，接口和抽象类的区别" class="headerlink" title="接口和抽象类，接口和抽象类的区别"></a>接口和抽象类，接口和抽象类的区别</h5><p>1    按如下要求编写Java程序</p>
+<p>1.1   开发出一个Animal类（动物）要求如下：</p>
+<p>1.1.1 该类为抽象类</p>
+<p>1.1.2 定义一个私有的（private）、字符串类型的、实例属性name，表示动物的名称。</p>
+<p>1.1.3 该类仅有一个公有的（public）构造方法，该构造方法有一个参数，参数为字符串类型该参数表示动物的名称，该构造方法的功能为将参数值赋值于属性name。</p>
+<p>1.1.4 该类包含两个互为重载的方法：</p>
+<p>1.1.4.1 public String getName(){&#x2F;&#x2F;…} 功能为获得动物的名称；</p>
+<p>1.1.4.2 public String getName(String prefix){ &#x2F;&#x2F;…} 功能为获得前面加上前缀的的动物名称。</p>
+<p>1.1.5 定义一个公有的抽象方法，其功能为吃东西：public abstract void eat();</p>
+<p>1.2   开发一个Flyer接口(飞行者)，要求如下：</p>
+<p>1.2.1 定义一个飞行方法：void fly();</p>
+<p>1.3   开发一个Swimer接口（游泳者），要求如下：</p>
+<p>1.3.1 定义一个游泳方法：void swim();</p>
+<p>1.4   开发一个FlyFish类（飞鱼）要求如下：</p>
+<p>1.4.1 该类为非抽象类；</p>
+<p>1.4.2 继承Animal类；</p>
+<p>1.4.3 实现Flyer接口和Swimer接口；</p>
+<p>1.4.4 定义一个公有的（public）无参构造方法，该构造方法通过调用父类的构造方法为父类属性name赋值“飞鱼”。</p>
+<p>1.4.5 定义一个公有的实例方法，其功能为玩游戏：public void game(){&#x2F;&#x2F;…}</p>
+<p>1.5   开发一个测试类如下，进行测试。</p>
+<pre><code class="java">public  abstract class Animal &#123;
+    private String name;
+    public Animal(String name)&#123;
+        this.name=name;
+    &#125;
+
+    public Animal() &#123;
+
+    &#125;
+
+    public String getName()&#123;
+        return name;
+    &#125;
+    public String getName(String prefix)&#123;
+        return prefix+name;
+    &#125;
+    public abstract void eat();
+
+    public void setName(String name) &#123;
+        this.name = name;
     &#125;
 &#125;
 
-public class SingleInstance01 &#123;
-    //初始化时创建对象
-    public static SingleInstance01 instance01=new SingleInstance01();
-    //私有化构造器
-    private SingleInstance01()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
-    &#125;
+
+public interface Flyer &#123;
+    void fly();
 &#125;
-</code></pre>
-<p>懒汉式，顾名思义就是实例在用到的时候才去创建，“比较懒”，用的时候才去检查有没有实例，如果有则返</p>
-<p>回，没有则新建。有线程安全和线程不安全两种写法，区别就是synchronized关键字。</p>
-<p>设计步骤：</p>
-<p>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象。</p>
-<p>3.提供一个返回单例对象的方法。</p>
-</li>
-</ul>
-<pre><code class="java">public class SingleInstanceDemo02 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance02 singleInstance01=SingleInstance02.getInstance02();
-        SingleInstance02 singleInstance02=SingleInstance02.getInstance02();
-        System.out.println(singleInstance01==singleInstance02);
+
+public interface Swimer &#123;
+    void swim();
+&#125;
+
+ublic class FlyFish extends Animal implements Flyer,Swimer &#123;
+    public FlyFish()&#123;
+        super.setName(&quot;飞鱼&quot;);
+    &#125;
+    @Override
+    public void eat() &#123;
+        System.out.println(&quot;飞鱼吃&quot;);
+    &#125;
+
+    @Override
+    public void fly() &#123;
+        System.out.println(&quot;飞鱼飞&quot;);
+    &#125;
+
+    @Override
+    public void swim() &#123;
+        System.out.println(&quot;飞鱼游泳&quot;);
+    &#125;
+    public void game()&#123;
+        System.out.println(&quot;玩游戏&quot;);
     &#125;
 &#125;
 
-public class SingleInstance02 &#123;
-    //初始化
-    public static SingleInstance02 instance02;
-    //私有化构造器
-    private SingleInstance02()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
+
+public class Text &#123;
+    public static void main(String[] args) &#123;
+        System.out.println(&quot;----------测试飞鱼类------------&quot;);
+        FlyFish flyFish=new FlyFish();
+        System.out.println(&quot;飞鱼名称：&quot;+flyFish.getName());
+        System.out.println(&quot;问候飞鱼：&quot;+flyFish.getName(&quot;可爱的&quot;));
+        flyFish.eat();
+        flyFish.fly();
+        flyFish.swim();
+        flyFish.game();
+        System.out.println(&quot;----------测试动物类------------&quot;);
+        Animal animal=flyFish;
+        System.out.println(&quot;动物名称：&quot;+animal.getName());
+        System.out.println(&quot;问候动物：&quot;+animal.getName(&quot;你好&quot;));
+        animal.eat();
+        System.out.println(&quot;----------测试飞行者接口------------&quot;);
+        Flyer flyer=flyFish;
+        flyer.fly();
+        System.out.println(&quot;----------测试游泳者接口------------&quot;);
+        Swimer swimer=flyFish;
+        swimer.swim();
+
+        Flyer flyer1=new FlyerImpl();
+        flyer1.fly();
+
+
     &#125;
-    //提供一个方法返回一个单例对象
-    public synchronized static SingleInstance02 getInstance02()&#123;
-        if (instance02 == null)&#123;
-            instance02=new SingleInstance02();//如何为空，就创建对象
-        &#125;
-        return instance02;
-    &#125;
+
 &#125;
 </code></pre>
 
@@ -202,7 +250,7 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/09/04/java%E5%A4%9A%E6%80%81%E5%AE%9E%E4%BE%8B/" itemprop="url">
+        <a href="/2022/09/04/%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E5%AF%B9%E8%B1%A1/" itemprop="url">
           <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
@@ -217,8 +265,8 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/08/31/hello-world/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">Hello World</h2>
+        <a href="/2022/09/04/%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3ssm%E6%95%B4%E5%90%88/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
       <div class="card-text--row">Older</div>

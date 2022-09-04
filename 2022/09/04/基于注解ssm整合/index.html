@@ -103,7 +103,7 @@
           <h2 class="title-sub-wrap">
             <strong>徐亮</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-08-31T17:59:16.953Z" itemprop="datePublished">2022-09-01</time>
+            <time  class="article-date" datetime="2022-09-04T06:36:02.276Z" itemprop="datePublished">2022-09-04</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -132,64 +132,245 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式，是一种思想，是一种常用的软件设计模式。</p>
-<ul>
-<li><p><strong>单例模式的含义</strong></p>
-</li>
-<li><p>单例模式，顾名思义就是只有一个实例，并且她自己负责创建自己的对象，这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。下面我们来看下有哪几种实现方式吧。</p>
-<p>核心代码：构造方法私有化，private。</p>
-<h4 id="单例模式的两种实现方式"><a href="#单例模式的两种实现方式" class="headerlink" title="单例模式的两种实现方式"></a>单例模式的两种实现方式</h4><p>饿汉式，顾名思义，就是“比较勤”，实例在初始化的时候就已经建好了，不管你有没有用到，都先建好了再说。好处是没有线程安全的问题，坏处是浪费内存空间。</p>
-<p>设计步骤：<br>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象</p>
-<pre><code class="java">public class SingleInstanceDemo01 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance01 singleInstance01=SingleInstance01.instance01;
-        SingleInstance01 singleInstance02=SingleInstance01.instance01;
-        System.out.println(singleInstance01==singleInstance02);
-    &#125;
-&#125;
+        <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p>​     在学习完 SSM 后，相信大家都对 SSM 整合中大量配置文件感到非常恼火，特别是在写一些配置文件时因为失误写错了一些字母导致程序一直不能正常运行，然后找 bug 找半天也找不到。在学校 SpringBoot 之前，我们就很有必要来了解通过注解的方式来整合我们的项目，这样能更好的理解 SpringBoot 在底层给我们的封装。同时也是对注解驱动开发的一个很好的复习。</p>
+<h2 id="2-Web容器配置类分析（替代-web-xml）"><a href="#2-Web容器配置类分析（替代-web-xml）" class="headerlink" title="2.Web容器配置类分析（替代 web.xml）"></a>2.Web容器配置类分析（替代 web.<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=xml&spm=1001.2101.3001.7020">xml</a>）</h2><pre><code>继承树：AbstractAnnotationConfigDispatcherServletInitializer 继承 AbstractDispatcherServletInitializer 继承 AbstractContextLoaderInitializer 继承 WebApplicationInitializer
+</code></pre>
+<h4 id="1-创建项目"><a href="#1-创建项目" class="headerlink" title="[1]创建项目"></a>[1]创建项目</h4><p>打开你的idea，配置好Maven，创建新的项目，创建好需要的目录和包,如下所示。</p>
+<p><img src="C:\Users\Achen\AppData\Roaming\Typora\typora-user-images\1655274847167.png" alt="1655274847167"></p>
+<h4 id="2-配置依赖"><a href="#2-配置依赖" class="headerlink" title="[2]配置依赖"></a>[2]配置依赖</h4><p>打开POM文件，添加下面的依赖 </p>
+<pre><code class="xml"> &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+            &lt;version&gt;5.2.10.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
 
-public class SingleInstance01 &#123;
-    //初始化时创建对象
-    public static SingleInstance01 instance01=new SingleInstance01();
-    //私有化构造器
-    private SingleInstance01()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+            &lt;version&gt;5.2.10.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+            &lt;version&gt;5.2.10.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+            &lt;version&gt;3.5.6&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;
+            &lt;version&gt;1.3.0&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;5.1.47&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+            &lt;artifactId&gt;druid&lt;/artifactId&gt;
+            &lt;version&gt;1.1.16&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.12&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+            &lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;
+            &lt;version&gt;3.1.0&lt;/version&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+            &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+            &lt;version&gt;2.9.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;build&gt;
+        &lt;!-- 配置将main/java下的资源文件也打包 --&gt;
+        &lt;resources&gt;
+            &lt;resource&gt;
+                &lt;directory&gt;src/main/java&lt;/directory&gt;
+                &lt;includes&gt;
+                    &lt;include&gt;**/*.properties&lt;/include&gt;
+                    &lt;include&gt;**/*.*&lt;/include&gt;
+                &lt;/includes&gt;
+                &lt;filtering&gt;false&lt;/filtering&gt;
+            &lt;/resource&gt;
+            &lt;resource&gt;
+                &lt;directory&gt;src/main/resources&lt;/directory&gt;
+                &lt;includes&gt;
+                    &lt;include&gt;**/*.properties&lt;/include&gt;
+                    &lt;include&gt;**/*.*&lt;/include&gt;
+                &lt;/includes&gt;
+                &lt;filtering&gt;false&lt;/filtering&gt;
+            &lt;/resource&gt;
+        &lt;/resources&gt;
+
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+                &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.1&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;port&gt;80&lt;/port&gt;
+                    &lt;path&gt;/&lt;/path&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;
+
+</code></pre>
+<h4 id="3-创建配置类"><a href="#3-创建配置类" class="headerlink" title="[3]创建配置类"></a>[3]创建配置类</h4><p>1.创建一个SpringConfig配置类，这个配置类主要用来创建根容器，并且扫描service包。</p>
+<p>这个类就相当使用XML配置文件整合时的spring的配置文件applicationContext.xml</p>
+<pre><code class="java">@Configuration
+@ComponentScan(&#123;&quot;com.ying.service&quot;&#125;)
+@Import(&#123;JdbcConfig.class,MybatisConfig.class&#125;)
+@EnableTransactionManagement
+public class SpringConfig &#123;
+
+&#125;
+</code></pre>
+<p>2.创建一个jdbcConfig的类，用于获取数据库连接信息并定义创建数据源的对象方法，并定义getDataSource()方法，用于创建DruidDataSource对象。 </p>
+<pre><code class="java">
+/**
+ *  在该包中创建名称为JdbcConfig的类，用于获取数据库连接信息并定义创建数据源的对象方法，
+ * 并定义getDataSource()方法，用于创建DruidDataSource对象。
+ */
+@PropertySource(&quot;classpath:jdbc.properties&quot;)
+public class JdbcConfig &#123;
+    @Value(&quot;$&#123;jdbc.driver&#125;&quot;)
+    private String driver;
+    @Value(&quot;$&#123;jdbc.url&#125;&quot;)
+    private String url;
+    @Value(&quot;$&#123;jdbc.username&#125;&quot;)
+    private String username;
+    @Value(&quot;$&#123;jdbc.password&#125;&quot;)
+    private String password;
+    /**
+     * 定义dataSource的bean，
+     * 等同于&lt;bean id=&quot;dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot;&gt;
+     */
+    @Bean
+    public DataSource dataSource()&#123;
+        DruidDataSource dataSource=new DruidDataSource();
+         /*
+            等同于set属性注入&lt;property name=&quot;driverClassName&quot; value=&quot;driver&quot;/&gt;
+          */
+        dataSource.setDriverClassName(driver);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+        return dataSource;
+    &#125;
+// 注入事务管理器
+    @Bean
+    public PlatformTransactionManager platformTransactionManager(DataSource dataSource)&#123;
+        DataSourceTransactionManager dataSourceTransactionManager=new DataSourceTransactionManager();
+        dataSourceTransactionManager.setDataSource(dataSource);
+        return dataSourceTransactionManager;
+    &#125;
+</code></pre>
+<ol start="3">
+<li><p>创建名称为MyBatisConfig的类，在MyBatisConfig类中定义sqlSessionFactory()方法，用于创建sqlSessionFactory对象并返回。 </p>
+<pre><code class="Java">
+public class MybatisConfig &#123;
+    
+     /**
+     *     定义MyBatis的核心连接工厂bean，
+     *     等同于 &lt;bean class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+     *      参数使用自动装配的形式加载dataSource，
+     *     为set注入提供数据源，dataSource来源于JdbcConfig中的配置
+     */
+    @Bean
+    public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource)&#123;
+       SqlSessionFactoryBean sqlSessionFactory=new SqlSessionFactoryBean();
+        //等同于&lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+       sqlSessionFactory.setDataSource(dataSource);
+       //设置别名,实体类别名
+        sqlSessionFactory.setTypeAliasesPackage(&quot;com.ying.pojo&quot;);
+        return sqlSessionFactory;
+    &#125;
+
+    @Bean
+    public MapperScannerConfigurer mapperScannerConfigurer()&#123;
+        MapperScannerConfigurer ms=new MapperScannerConfigurer();
+         //等同于&lt;property name=&quot;basePackage&quot; value=&quot;com.itheima.dao&quot;/&gt;
+        ms.setBasePackage(&quot;com.ying.dao&quot;);
+        return ms;
     &#125;
 &#125;
 </code></pre>
-<p>懒汉式，顾名思义就是实例在用到的时候才去创建，“比较懒”，用的时候才去检查有没有实例，如果有则返</p>
-<p>回，没有则新建。有线程安全和线程不安全两种写法，区别就是synchronized关键字。</p>
-<p>设计步骤：</p>
-<p>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象。</p>
-<p>3.提供一个返回单例对象的方法。</p>
 </li>
-</ul>
-<pre><code class="java">public class SingleInstanceDemo02 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance02 singleInstance01=SingleInstance02.getInstance02();
-        SingleInstance02 singleInstance02=SingleInstance02.getInstance02();
-        System.out.println(singleInstance01==singleInstance02);
+<li><p>创建名称为SpringMvcConfig的类作为Spring MVC的配置类，在配置类中指定Controller层的扫描路径，并设置静态资源访问问题。</p>
+</li>
+</ol>
+<pre><code class="Java">
+@Configuration
+@ComponentScan(&#123;&quot;com.ying.service&quot;&#125;)
+@Import(&#123;JdbcConfig.class,MybatisConfig.class&#125;)
+@EnableTransactionManagement
+public class SpringConfig  implements WebMvcConfigurer &#123;
+    @Autowired
+    private ProjectInterception projectInterception;
+    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;
+        //访问静态资源
+        registry.addResourceHandler(&quot;/pages/**&quot;).addResourceLocations(&quot;/pages&quot;);
+        registry.addResourceHandler(&quot;/js/**&quot;).addResourceLocations(&quot;/js&quot;);
+        registry.addResourceHandler(&quot;/plugins/**&quot;).addResourceLocations(&quot;/plugins&quot;);
+        registry.addResourceHandler(&quot;/css/**&quot;).addResourceLocations(&quot;/css&quot;);
+    &#125;
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) &#123;
+        registry.addInterceptor(projectInterception).addPathPatterns(&quot;/books&quot;,&quot;/books/*&quot;);
     &#125;
 &#125;
 
-public class SingleInstance02 &#123;
-    //初始化
-    public static SingleInstance02 instance02;
-    //私有化构造器
-    private SingleInstance02()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
+</code></pre>
+<p>   5.至此，已经完成了SSM框架整合的配置类编写，接下来需要在项目初始化Servlet容器时加载指定初始化的信息，来替代之前web.xml文件配置的信息 。在com.itheima.config包中创建名称为ServletConfig的类，继承AbstractAnnotationConfigDispatcherServletInitializer抽象类，重写抽象类的方法。</p>
+<pre><code class="java">
+public class ServletConfig extends AbstractAnnotationConfigDispatcherServletInitializer &#123;
+    protected Class&lt;?&gt;[] getRootConfigClasses() &#123;
+        return new Class[]&#123;SpringConfig.class&#125;;
     &#125;
-    //提供一个方法返回一个单例对象
-    public synchronized static SingleInstance02 getInstance02()&#123;
-        if (instance02 == null)&#123;
-            instance02=new SingleInstance02();//如何为空，就创建对象
-        &#125;
-        return instance02;
+
+    protected Class&lt;?&gt;[] getServletConfigClasses() &#123;
+        return new Class[]&#123;SpringMvcConfig.class&#125;;
+    &#125;
+
+    protected String[] getServletMappings() &#123;
+        return new String[]&#123;&quot;/&quot;&#125;;
+    &#125;
+    //乱码处理
+    @Override
+    protected Filter[] getServletFilters()&#123;
+        CharacterEncodingFilter filter=new CharacterEncodingFilter();
+        filter.setEncoding(&quot;UTF-8&quot;);
+        return new Filter[]&#123;filter&#125;;
     &#125;
 &#125;
 </code></pre>
+<h4 id="整个项目结构如图"><a href="#整个项目结构如图" class="headerlink" title="整个项目结构如图:"></a>整个项目结构如图:</h4><p><img src="C:\Users\Achen\AppData\Roaming\Typora\typora-user-images\1655276015206.png" alt="1655276015206"></p>
 
       </section>
 
@@ -202,7 +383,7 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/09/04/java%E5%A4%9A%E6%80%81%E5%AE%9E%E4%BE%8B/" itemprop="url">
+        <a href="/2022/09/04/%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%EF%BC%8C%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%E7%9A%84%E5%8C%BA%E5%88%AB/" itemprop="url">
           <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
@@ -217,8 +398,8 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/08/31/hello-world/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">Hello World</h2>
+        <a href="/2022/09/04/%E5%8F%8D%E5%B0%84%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E7%81%B5%E9%AD%82/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
       <div class="card-text--row">Older</div>

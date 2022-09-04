@@ -103,7 +103,7 @@
           <h2 class="title-sub-wrap">
             <strong>徐亮</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-08-31T17:59:16.953Z" itemprop="datePublished">2022-09-01</time>
+            <time  class="article-date" datetime="2022-09-04T06:35:17.596Z" itemprop="datePublished">2022-09-04</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -132,61 +132,190 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式，是一种思想，是一种常用的软件设计模式。</p>
-<ul>
-<li><p><strong>单例模式的含义</strong></p>
-</li>
-<li><p>单例模式，顾名思义就是只有一个实例，并且她自己负责创建自己的对象，这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。下面我们来看下有哪几种实现方式吧。</p>
-<p>核心代码：构造方法私有化，private。</p>
-<h4 id="单例模式的两种实现方式"><a href="#单例模式的两种实现方式" class="headerlink" title="单例模式的两种实现方式"></a>单例模式的两种实现方式</h4><p>饿汉式，顾名思义，就是“比较勤”，实例在初始化的时候就已经建好了，不管你有没有用到，都先建好了再说。好处是没有线程安全的问题，坏处是浪费内存空间。</p>
-<p>设计步骤：<br>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象</p>
-<pre><code class="java">public class SingleInstanceDemo01 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance01 singleInstance01=SingleInstance01.instance01;
-        SingleInstance01 singleInstance02=SingleInstance01.instance01;
-        System.out.println(singleInstance01==singleInstance02);
+        <h4 id="1-按如下要求开发Java应用"><a href="#1-按如下要求开发Java应用" class="headerlink" title="1    按如下要求开发Java应用"></a>1    按如下要求开发Java应用</h4><p>1.1   开发一个食物类Food，具体要求如下：</p>
+<p>1.2   具有私有属性：营养值，提供公有的get方法和保护的set方法。</p>
+<p>1.3   有一个保护的无参的构造方法，在该方法内营养值由1-10之间的随机数产生</p>
+<p>1.4   包含一个公有的获取食物名称的方法:public String getName(){……}</p>
+<p>1.5   添加主方法测试</p>
+<pre><code class="java">public class Food &#123;
+    private double  nutrition;//营养值
+    private String name;
+
+    public double  getNutrition() &#123;
+        return nutrition;
+    &#125;
+
+    public void setNutrition(double nutrition) &#123;
+        this.nutrition = nutrition;
+    &#125;
+
+    public void setName(String name) &#123;
+        this.name = name;
+    &#125;
+
+    protected Food() &#123;
+        this.nutrition = ((Math.random() * 9) + 1);
+    &#125;
+    public String getName() &#123;
+        return name;
     &#125;
 &#125;
 
-public class SingleInstance01 &#123;
-    //初始化时创建对象
-    public static SingleInstance01 instance01=new SingleInstance01();
-    //私有化构造器
-    private SingleInstance01()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
+
+public class FoodText &#123;
+    public static void main(String[] args) &#123;
+        Food food=new Food();
+        double nutrition = food.getNutrition();
+        System.out.println(nutrition);
+        food.setName(&quot;肉&quot;);
+        String name = food.getName();
+        System.out.println(name);
+</code></pre>
+<h4 id="2-分别开发Food类的三个派生类：肉制品类、淀粉类和水果蔬菜类，要求："><a href="#2-分别开发Food类的三个派生类：肉制品类、淀粉类和水果蔬菜类，要求：" class="headerlink" title="2   分别开发Food类的三个派生类：肉制品类、淀粉类和水果蔬菜类，要求："></a>2   分别开发Food类的三个派生类：肉制品类、淀粉类和水果蔬菜类，要求：</h4><p>2.1   这三个类均显式编写无参的构造方法，并分别对营养值乘1.2 , 0.7 , 0.9 处理；</p>
+<p>2.2   这三个类均重写父类的获取食物名称的方法;</p>
+<p>2.3   并测试。</p>
+<pre><code class="java">public class Meat extends Food &#123;
+    private String name;
+    public Meat()&#123;
+        super.setNutrition(super.getNutrition()*1.2);
+    &#125;
+    //重写父类的获取食物的名称方法
+    @Override
+    public String getName() &#123;
+
+        return this.name;
+    &#125;
+
+    public void setName(String name) &#123;
+        this.name = name;
+    &#125;
+&#125;
+
+public class Starch extends Food &#123;//淀粉
+    private String name;
+    public Starch()&#123;
+        super.setNutrition(super.getNutrition()*0.7);
+    &#125;
+    //重写父类的获取食物的名称方法
+    @Override
+    public String getName() &#123;
+
+        return this.name;
+    &#125;
+
+    public void setName(String name) &#123;
+        this.name = name;
+    &#125;
+&#125;
+
+public class Fruits extends Food &#123;
+    private String name;
+    public Fruits()&#123;
+        super.setNutrition(super.getNutrition()*0.9);
+    &#125;
+    //重写父类的获取食物的名称方法
+    @Override
+    public String getName() &#123;
+
+        return this.name;
+    &#125;
+
+    public void setName(String name) &#123;
+        this.name = name;
+    &#125;
+&#125;
+
+</code></pre>
+<h4 id="3-开发一个猴子类Monkey，具体要求如下："><a href="#3-开发一个猴子类Monkey，具体要求如下：" class="headerlink" title="3    开发一个猴子类Monkey，具体要求如下："></a>3    开发一个猴子类Monkey，具体要求如下：</h4><p>3.1   具有私有属性：名称，体重（直接赋初值10.0），两者均提供公有的get方法。</p>
+<p>3.2   仅有一个公有的有参构造方法：构造参数参数为名称</p>
+<p>3.3   具有一个公有的，参数是Food类型，无返回值的eat(Food food)方法，其功能是吃食物（在控制台打印猴子名称和食物名称等信息），同时体重会增加，体重增加量是：营养值*0.1</p>
+<p>3.4   具有一个公有的，无参的，无返回值的game()方法，其功能是游戏（可在控制台打印信息），体重降低0.05，若体重在5以下不再下降。</p>
+<p>3.5   重写toString方法</p>
+<p>3.6   重写equals方法（注意遵守Java关于重写equals方法的有关规定）</p>
+<p>3.7   添加主方法测试。</p>
+<pre><code class="java">public class Monkey &#123;
+    private String name;
+    private double weight = 10.0;
+
+    public Monkey(String name)&#123;
+        this.name=name;
+    &#125;
+    public void eat(Food food)&#123;
+        System.out.println(&quot;食物的名称：&quot;+food.getName());
+        System.out.println(&quot;猴子的名称：&quot;+this.name);
+        this.weight +=food.getNutrition()*0.1;
+        System.out.println(&quot;猴子的体重：&quot;+this.weight);
+    &#125;
+    public void game()&#123;
+        if(this.weight&lt;5)&#123;
+            System.out.println(&quot;太虚弱了，该进食了！！&quot;);
+            return;
+        &#125;
+        this.weight -=0.5;
+    &#125;
+    public String getName() &#123;
+        return name;
+    &#125;
+    public double getWeight() &#123;
+        return weight;
+    &#125;
+
+    @Override
+    public String toString() &#123;
+        return &quot;Monkey&#123;&quot; +
+                &quot;name=&#39;&quot; + name + &#39;\&#39;&#39; +
+                &quot;, weight=&quot; + weight +
+                &#39;&#125;&#39;;
+    &#125;
+&#125;
+public class FoodText &#123;
+    public static void main(String[] args) &#123;
+       Food food = new Food();
+        Monkey monkey=new Monkey(&quot;凯撒大帝&quot;);
+        monkey.eat(food);
+        monkey.game();
+
     &#125;
 &#125;
 </code></pre>
-<p>懒汉式，顾名思义就是实例在用到的时候才去创建，“比较懒”，用的时候才去检查有没有实例，如果有则返</p>
-<p>回，没有则新建。有线程安全和线程不安全两种写法，区别就是synchronized关键字。</p>
-<p>设计步骤：</p>
-<p>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象。</p>
-<p>3.提供一个返回单例对象的方法。</p>
-</li>
-</ul>
-<pre><code class="java">public class SingleInstanceDemo02 &#123;
+<h4 id="4-开发一个管理类，该类功能如下："><a href="#4-开发一个管理类，该类功能如下：" class="headerlink" title="4   开发一个管理类，该类功能如下："></a>4   开发一个管理类，该类功能如下：</h4><p>创建20个猴子，每个猴子姓名随机产生，但不允许重名，每个猴子进行100次吃食物和游戏，具体每次吃食物还是游戏是随机的，而且获取食物也是随机的可能是肉制品，水果蔬菜制品和淀粉制品。最后输出20个猴子的名称和体重。注：可以根据需要自由设计该类。</p>
+<pre><code class="java">public class MonkeyGama &#123;
     public static void main(String[] args) &#123;
-        SingleInstance02 singleInstance01=SingleInstance02.getInstance02();
-        SingleInstance02 singleInstance02=SingleInstance02.getInstance02();
-        System.out.println(singleInstance01==singleInstance02);
-    &#125;
-&#125;
+        //创建20个猴子对象
+        for (int k=1;k&lt;=20;k++)&#123;
+            Monkey monkey =new Monkey(&quot;凯撒&quot;+k);
+            Food food=null;
+            for(int j=0;j&lt;100;j++)&#123;
+                int num=(int)(Math.random()*2+1);//1吃东西2玩游戏
+                if(num==1)&#123;
+                    int num1=(int)(Math.random()*3+1);//1吃肉 2淀粉 3水果
+                    if(num1==1)&#123;//吃肉
+                        food=new Meat();
+                        food.setName(&quot;肉肉肉&quot;);
+                        monkey.eat(food);
+                    &#125;else if(num1==2)&#123;//淀粉
+                        food=new Starch();
+                        food.setName(&quot;淀粉&quot;);
+                        monkey.eat(food);
+                    &#125;else &#123;//水果
+                        food=new Fruits();
+                        food.setName(&quot;水果&quot;);
+                        monkey.eat(food);
+                    &#125;
+                    //吃食物信息打印
+                    System.out.print(monkey.getName()+&quot;吃:&quot;+food.getName()+&quot;体重:&quot;);
+                    System.out.printf(&quot;%.1f&quot;,monkey.getWeight());
+                    System.out.println();
+                &#125;else &#123;
+                    monkey.game();
+                    //玩游戏信息打印
+                    System.out.print(monkey.getName()+&quot;玩游戏体重:&quot;);
+                    System.out.printf(&quot;%.1f&quot;,monkey.getWeight());
+                    System.out.println();
 
-public class SingleInstance02 &#123;
-    //初始化
-    public static SingleInstance02 instance02;
-    //私有化构造器
-    private SingleInstance02()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
-    &#125;
-    //提供一个方法返回一个单例对象
-    public synchronized static SingleInstance02 getInstance02()&#123;
-        if (instance02 == null)&#123;
-            instance02=new SingleInstance02();//如何为空，就创建对象
+                &#125;
+            &#125;
         &#125;
-        return instance02;
     &#125;
 &#125;
 </code></pre>
@@ -202,7 +331,7 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/09/04/java%E5%A4%9A%E6%80%81%E5%AE%9E%E4%BE%8B/" itemprop="url">
+        <a href="/2022/09/04/JDBC%E6%8A%A5The%20server%20time%20zone%20value%20'%C3%96%C3%90%C2%B9%C3%BA%C2%B1%C3%AA%C3%97%C2%BC%C3%8A%C2%B1%C2%BC%C3%A4'%20is%20unrecognized%20%EF%BC%88%E6%97%B6%E5%8C%BA%E9%94%99%E8%AF%AF%EF%BC%89/" itemprop="url">
           <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
@@ -217,8 +346,8 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/08/31/hello-world/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">Hello World</h2>
+        <a href="/2022/09/01/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
       <div class="card-text--row">Older</div>

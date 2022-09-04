@@ -103,7 +103,7 @@
           <h2 class="title-sub-wrap">
             <strong>徐亮</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-08-31T17:59:16.953Z" itemprop="datePublished">2022-09-01</time>
+            <time  class="article-date" datetime="2022-09-04T06:36:02.243Z" itemprop="datePublished">2022-09-04</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -132,63 +132,38 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式，是一种思想，是一种常用的软件设计模式。</p>
-<ul>
-<li><p><strong>单例模式的含义</strong></p>
-</li>
-<li><p>单例模式，顾名思义就是只有一个实例，并且她自己负责创建自己的对象，这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。下面我们来看下有哪几种实现方式吧。</p>
-<p>核心代码：构造方法私有化，private。</p>
-<h4 id="单例模式的两种实现方式"><a href="#单例模式的两种实现方式" class="headerlink" title="单例模式的两种实现方式"></a>单例模式的两种实现方式</h4><p>饿汉式，顾名思义，就是“比较勤”，实例在初始化的时候就已经建好了，不管你有没有用到，都先建好了再说。好处是没有线程安全的问题，坏处是浪费内存空间。</p>
-<p>设计步骤：<br>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象</p>
-<pre><code class="java">public class SingleInstanceDemo01 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance01 singleInstance01=SingleInstance01.instance01;
-        SingleInstance01 singleInstance02=SingleInstance01.instance01;
-        System.out.println(singleInstance01==singleInstance02);
+        <h1 id="反射-框架设计的灵魂"><a href="#反射-框架设计的灵魂" class="headerlink" title="反射:框架设计的灵魂"></a>反射:框架设计的灵魂</h1><p>框架:半成品软件。可以在框架的基础上进行软件开发，简化编码</p>
+<p>反射:将类的各个组成部分封装为其他对象，这就是反射机制</p>
+<h3 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h3><p>1．可以在程序运行过程中，操作这些对象。<br>2．可以解耦，提高程序的可扩展性。</p>
+<h2 id="获取Class对象的方式："><a href="#获取Class对象的方式：" class="headerlink" title="获取Class对象的方式："></a>获取Class对象的方式：</h2><pre><code class="java"> public static void main(String[] args) throws Exception &#123;
+        //1.Class.forName(&quot;全类名&quot;)
+        Class cls1 = Class.forName(&quot;com.ying.pojo.Person&quot;);
+        System.out.println(cls1);
+        //2.类名.class
+        Class cls2= Person.class;
+        System.out.println(cls2);
+        //3.对象.getClass();
+        Person person=new Person();
+        Class cls3 = person.getClass();
+        System.out.println(cls3);
+        //====比较三个对象
+        System.out.println(cls1 == cls2);//true
+        System.out.println(cls2 == cls3);//true
     &#125;
-&#125;
-
-public class SingleInstance01 &#123;
-    //初始化时创建对象
-    public static SingleInstance01 instance01=new SingleInstance01();
-    //私有化构造器
-    private SingleInstance01()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
-    &#125;
-&#125;
 </code></pre>
-<p>懒汉式，顾名思义就是实例在用到的时候才去创建，“比较懒”，用的时候才去检查有没有实例，如果有则返</p>
-<p>回，没有则新建。有线程安全和线程不安全两种写法，区别就是synchronized关键字。</p>
-<p>设计步骤：</p>
-<p>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象。</p>
-<p>3.提供一个返回单例对象的方法。</p>
-</li>
-</ul>
-<pre><code class="java">public class SingleInstanceDemo02 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance02 singleInstance01=SingleInstance02.getInstance02();
-        SingleInstance02 singleInstance02=SingleInstance02.getInstance02();
-        System.out.println(singleInstance01==singleInstance02);
-    &#125;
-&#125;
+<img src="C:\Users\Achen\AppData\Roaming\Typora\typora-user-images\1647830950267.png" alt="1647830950267" style="zoom:90%;" />
 
-public class SingleInstance02 &#123;
-    //初始化
-    public static SingleInstance02 instance02;
-    //私有化构造器
-    private SingleInstance02()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
-    &#125;
-    //提供一个方法返回一个单例对象
-    public synchronized static SingleInstance02 getInstance02()&#123;
-        if (instance02 == null)&#123;
-            instance02=new SingleInstance02();//如何为空，就创建对象
-        &#125;
-        return instance02;
-    &#125;
-&#125;
+<h3 id="结论∶"><a href="#结论∶" class="headerlink" title="结论∶"></a>结论∶</h3><p><strong>同一个字节码文件(*.class)在一次程序运行过程中，只会被加载一次，不论通过哪一种方式获取的class对象都是同一个。</strong></p>
+<h3 id="Class对象功能："><a href="#Class对象功能：" class="headerlink" title="Class对象功能："></a>Class对象功能：</h3><h5 id="获取功能："><a href="#获取功能：" class="headerlink" title="* 获取功能："></a>* 获取功能：</h5><p><strong>1. 获取成员变量们</strong><br>            * Field[] getFields() ：获取所有public修饰的成员变量<br>            * Field getField(String name)   获取指定名称的 public修饰的成员变量</p>
+<pre><code>        * Field[] getDeclaredFields()  获取所有的成员变量，不考虑修饰符
+        * Field getDeclaredField(String name)  
+        * * 操作：
+            1. 设置值
+                * void set(Object obj, Object value)  
+            2. 获取值
+                * get(Object obj) 
+            3. 忽略访问权限修饰符的安全检查
+                * setAccessible(true):暴力反射
 </code></pre>
 
       </section>
@@ -202,7 +177,7 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/09/04/java%E5%A4%9A%E6%80%81%E5%AE%9E%E4%BE%8B/" itemprop="url">
+        <a href="/2022/09/04/%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3ssm%E6%95%B4%E5%90%88/" itemprop="url">
           <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
@@ -217,8 +192,8 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/08/31/hello-world/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">Hello World</h2>
+        <a href="/2022/09/04/win10%20%E6%89%BE%E4%B8%8D%E5%88%B0VMnet1%E4%B8%8EVMnet8%E8%99%9A%E6%8B%9F%E7%BD%91%E5%8D%A1%EF%BC%8C%E8%99%9A%E6%8B%9F%E6%9C%BAWMware%E6%B2%A1%E6%9C%89VMnet0/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
       <div class="card-text--row">Older</div>

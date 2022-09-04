@@ -103,7 +103,7 @@
           <h2 class="title-sub-wrap">
             <strong>徐亮</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-08-31T17:59:16.953Z" itemprop="datePublished">2022-09-01</time>
+            <time  class="article-date" datetime="2022-09-04T06:35:31.141Z" itemprop="datePublished">2022-09-04</time>
           </h2>
           <ul class="wrap-list dark">
   
@@ -132,63 +132,279 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>单例模式，是一种思想，是一种常用的软件设计模式。</p>
-<ul>
-<li><p><strong>单例模式的含义</strong></p>
-</li>
-<li><p>单例模式，顾名思义就是只有一个实例，并且她自己负责创建自己的对象，这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。下面我们来看下有哪几种实现方式吧。</p>
-<p>核心代码：构造方法私有化，private。</p>
-<h4 id="单例模式的两种实现方式"><a href="#单例模式的两种实现方式" class="headerlink" title="单例模式的两种实现方式"></a>单例模式的两种实现方式</h4><p>饿汉式，顾名思义，就是“比较勤”，实例在初始化的时候就已经建好了，不管你有没有用到，都先建好了再说。好处是没有线程安全的问题，坏处是浪费内存空间。</p>
-<p>设计步骤：<br>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象</p>
-<pre><code class="java">public class SingleInstanceDemo01 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance01 singleInstance01=SingleInstance01.instance01;
-        SingleInstance01 singleInstance02=SingleInstance01.instance01;
-        System.out.println(singleInstance01==singleInstance02);
-    &#125;
-&#125;
+        <h3 id="SSM整合开发"><a href="#SSM整合开发" class="headerlink" title="SSM整合开发"></a>SSM整合开发</h3><p>SSM  ： SpringMVC + Spring + MyBatis</p>
+<p>SpringMVC:视图层，界面层，负责接收请求，显示处理结果的。<br>Spring：业务层，管理service，dao，工具类对象的。<br>MyBatis：持久层， 访问数据库的.</p>
+<p>用户发起请求–SpringMVC接收–Spring中的Service对象–MyBatis处理数据</p>
+<p>SSM整合也叫做SSI (IBatis也就是mybatis的前身)， 整合中有容器。<br>1.第一个容器SpringMVC容器， 管理Controller控制器对象的。<br>2.第二个容器Spring容器，管理Service，Dao,工具类对象的<br>我们要做的把使用的对象交给合适的容器创建，管理。 把Controller还有web开发的相关对象<br>交给springmvc容器， 这些web用的对象写在springmvc配置文件中</p>
+<p>service，dao对象定义在spring的配置文件中，让spring管理这些对象。</p>
+<p>springmvc容器和spring容器是有关系的，关系已经确定好了<br>springmvc容器是spring容器的子容器， 类似java中的继承。 子可以访问父的内容<br>在子容器中的Controller可以访问父容器中的Service对象， 就可以实现controller使用service对象</p>
+<p>实现步骤：<br>0.建表<br>1.新建maven web项目<br>2.加入依赖<br>  springmvc，spring，mybatis三个框架的依赖，jackson依赖，mysql驱动，druid连接池<br>  jsp，servlet依赖</p>
+<pre><code class="xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;junit&lt;/groupId&gt;
+    &lt;artifactId&gt;junit&lt;/artifactId&gt;
+    &lt;version&gt;4.11&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+  &lt;/dependency&gt;
+  &lt;!--servlet依赖--&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;
+    &lt;version&gt;3.1.0&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+  &lt;/dependency&gt;
+  &lt;!-- jsp依赖 --&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;javax.servlet.jsp&lt;/groupId&gt;
+    &lt;artifactId&gt;jsp-api&lt;/artifactId&gt;
+    &lt;version&gt;2.2.1-b03&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+  &lt;/dependency&gt;
+   &lt;!--    spring驱动--&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+    &lt;version&gt;5.2.5.RELEASE&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;!--    提交事务--&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-tx&lt;/artifactId&gt;
+    &lt;version&gt;5.2.5.RELEASE&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+    &lt;version&gt;5.2.5.RELEASE&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-core&lt;/artifactId&gt;
+    &lt;version&gt;2.9.0&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+    &lt;version&gt;2.9.0&lt;/version&gt;
+  &lt;/dependency&gt;
+        &lt;!--      mybatis和spring集成--&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;
+    &lt;version&gt;1.3.1&lt;/version&gt;
+  &lt;/dependency&gt;
+        &lt;!--      mybatis驱动--&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.mybatis&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis&lt;/artifactId&gt;
+    &lt;version&gt;3.5.1&lt;/version&gt;
+  &lt;/dependency&gt;
+       &lt;!--      mysql驱动--&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;mysql&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+    &lt;version&gt;5.1.9&lt;/version&gt;
+  &lt;/dependency&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+    &lt;artifactId&gt;druid&lt;/artifactId&gt;
+    &lt;version&gt;1.1.12&lt;/version&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
 
-public class SingleInstance01 &#123;
-    //初始化时创建对象
-    public static SingleInstance01 instance01=new SingleInstance01();
-    //私有化构造器
-    private SingleInstance01()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
-    &#125;
-&#125;
+ &lt;build&gt;
+    &lt;resources&gt;
+      &lt;resource&gt;
+        &lt;directory&gt;src/main/java&lt;/directory&gt;&lt;!--所在的目录--&gt;
+        &lt;includes&gt;&lt;!--包括目录下的.properties,.xml 文件都会扫描到--&gt;
+          &lt;include&gt;**/*.properties&lt;/include&gt;
+          &lt;include&gt;**/*.xml&lt;/include&gt;
+        &lt;/includes&gt;
+        &lt;filtering&gt;false&lt;/filtering&gt;
+      &lt;/resource&gt;
+    &lt;/resources&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+        &lt;version&gt;3.1&lt;/version&gt;
+        &lt;configuration&gt;
+          &lt;source&gt;1.8&lt;/source&gt;
+          &lt;target&gt;1.8&lt;/target&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
 </code></pre>
-<p>懒汉式，顾名思义就是实例在用到的时候才去创建，“比较懒”，用的时候才去检查有没有实例，如果有则返</p>
-<p>回，没有则新建。有线程安全和线程不安全两种写法，区别就是synchronized关键字。</p>
-<p>设计步骤：</p>
-<p>1.定义一个类，把构造器私有。</p>
-<p>2.定义一个静态变量存储一个对象。</p>
-<p>3.提供一个返回单例对象的方法。</p>
-</li>
-</ul>
-<pre><code class="java">public class SingleInstanceDemo02 &#123;
-    public static void main(String[] args) &#123;
-        SingleInstance02 singleInstance01=SingleInstance02.getInstance02();
-        SingleInstance02 singleInstance02=SingleInstance02.getInstance02();
-        System.out.println(singleInstance01==singleInstance02);
-    &#125;
-&#125;
+<p>3.写web.xml<br>  1)注册DispatcherServlet ,目的：1.创建springmvc容器对象，才能创建Controller类对象。<br>                                2.创建的是Servlet，才能接受用户的请求。</p>
+<pre><code class="xml">&lt;!--注册中央调度器--&gt;
+&lt;servlet&gt;
+  &lt;servlet-name&gt;myweb&lt;/servlet-name&gt;
+  &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+  &lt;init-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath:springMVC.xml&lt;/param-value&gt;
+  &lt;/init-param&gt;
+  &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+  &lt;servlet-name&gt;myweb&lt;/servlet-name&gt;
+  &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre>
+<p>  2）注册spring的监听器：ContextLoaderListener,目的： 创建spring的容器对象，才能创建service，dao等对象。</p>
+<pre><code class="xml">&lt;!--注册spring的监听器--&gt;
+&lt;context-param&gt;
+  &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+  &lt;param-value&gt;classpath:applicationContext.xml&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listener&gt;
+  &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;
+</code></pre>
+<p>  3）注册字符集过滤器，解决post请求乱码的问题</p>
+<pre><code class="xml">&lt;!--注册字符集过滤器--&gt;
+&lt;filter&gt;
+  &lt;filter-name&gt;characterEncodingFilter&lt;/filter-name&gt;
+  &lt;filter-class&gt;org.springframework.web.filter.CharacterEncodingFilter&lt;/filter-class&gt;
+  &lt;init-param&gt;
+    &lt;param-name&gt;encoding&lt;/param-name&gt;
+    &lt;param-value&gt;utf-8&lt;/param-value&gt;
+  &lt;/init-param&gt;
+  &lt;init-param&gt;
+    &lt;param-name&gt;forceRequestEncoding&lt;/param-name&gt;
+    &lt;param-value&gt;true&lt;/param-value&gt;
+  &lt;/init-param&gt;
+  &lt;init-param&gt;
+    &lt;param-name&gt;forceResponseEncoding&lt;/param-name&gt;
+    &lt;param-value&gt;true&lt;/param-value&gt;
+  &lt;/init-param&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+  &lt;filter-name&gt;characterEncodingFilter&lt;/filter-name&gt;
+  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</code></pre>
+<p>4.创建包， Controller包， service ，dao，实体类包名创建好</p>
+<p>5.写springmvc，spring，mybatis的配置文件<br> 1）springmvc配置文件</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd&quot;&gt;
 
-public class SingleInstance02 &#123;
-    //初始化
-    public static SingleInstance02 instance02;
-    //私有化构造器
-    private SingleInstance02()&#123;
-        System.out.println(&quot;创建了一个对象&quot;);
-    &#125;
-    //提供一个方法返回一个单例对象
-    public synchronized static SingleInstance02 getInstance02()&#123;
-        if (instance02 == null)&#123;
-            instance02=new SingleInstance02();//如何为空，就创建对象
-        &#125;
-        return instance02;
-    &#125;
-&#125;
+    &lt;!--springmvc配置文件， 声明controller和其它web相关的对象--&gt;
+    &lt;context:component-scan base-package=&quot;com.xu.controller&quot; /&gt;
+
+    &lt;bean class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/jsp/&quot; /&gt;
+        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+    &lt;/bean&gt;
+
+    &lt;mvc:annotation-driven /&gt;
+    &lt;!--
+      1. 响应ajax请求，返回json
+      2. 解决静态资源访问问题。
+    --&gt;
+   &lt;mvc:default-servlet-handler /&gt;
+&lt;/beans&gt;
+</code></pre>
+<p> 2）spring配置文件</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
+
+    &lt;!--spring配置文件： 声明service，dao，工具类等对象--&gt;
+
+    &lt;context:property-placeholder location=&quot;classpath:conf/jdbc.properties&quot; /&gt;
+ 
+    &lt;!--声明数据源，连接数据库--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot;
+          init-method=&quot;init&quot; destroy-method=&quot;close&quot;&gt;
+        &lt;property name=&quot;url&quot; value=&quot;$&#123;jdbc.url&#125;&quot; /&gt;
+        &lt;property name=&quot;username&quot; value=&quot;$&#123;jdbc.username&#125;&quot; /&gt;
+        &lt;property name=&quot;password&quot; value=&quot;$&#123;jdbc.password&#125;&quot; /&gt;
+    &lt;/bean&gt;
+
+    &lt;!--SqlSessionFactoryBean创建SqlSessionFactory--&gt;
+    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+        &lt;property name=&quot;configLocation&quot;  value=&quot;classpath:conf/mybatis.xml&quot; /&gt;
+    &lt;/bean&gt;
+    
+    &lt;!--声明mybatis的扫描器，创建dao对象--&gt;
+    &lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;
+        &lt;property name=&quot;sqlSessionFactoryBeanName&quot; value=&quot;sqlSessionFactory&quot; /&gt;
+        &lt;property name=&quot;basePackage&quot; value=&quot;com.xu.dao&quot; /&gt;
+    &lt;/bean&gt;
+
+    &lt;!--声明service的注解@Service所在的包名位置--&gt;
+    &lt;context:component-scan base-package=&quot;com.xu.service&quot; /&gt;
+
+    &lt;!--事务配置：注解的配置， aspectj的配置--&gt;
+&lt;/beans&gt;
+</code></pre>
+<p> 3）mybatis主配置文件</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+
+    &lt;!--settings：控制mybatis全局行为--&gt;
+   &lt;!-- &lt;settings&gt;
+        &amp;lt;!&amp;ndash;设置mybatis输出日志&amp;ndash;&amp;gt;
+        &lt;setting name=&quot;logImpl&quot; value=&quot;STDOUT_LOGGING&quot;/&gt;
+    &lt;/settings&gt;--&gt;
+
+    &lt;!--设置别名--&gt;
+    &lt;typeAliases&gt;
+        &lt;!--name:实体类所在的包名(不是实体类的包名也可以)--&gt;
+        &lt;package name=&quot;com.xu.domain&quot;/&gt;
+    &lt;/typeAliases&gt;
+
+
+    &lt;!-- sql mapper(sql映射文件)的位置--&gt;
+    &lt;mappers&gt;
+        &lt;!--
+          name：是包名， 这个包中的所有mapper.xml一次都能加载
+          使用package的要求：
+           1. mapper文件名称和dao接口名必须完全一样，包括大小写
+           2. mapper文件和dao接口必须在同一目录
+        --&gt;
+        &lt;package name=&quot;com.xu.dao&quot;/&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p> 4）数据库的属性配置文件</p>
+<pre><code class="properties">jdbc.url=jdbc:mysql://localhost:3306/springdb
+jdbc.username=root
+jdbc.password=root
+</code></pre>
+<p>6.写代码， dao接口和mapper文件， service和实现类，controller， 实体类。</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;com.xu.dao.StudentDao&quot;&gt;
+    &lt;select id=&quot;selectStudents&quot; resultType=&quot;Student&quot;&gt;
+        select id,name,age from student order by id desc
+    &lt;/select&gt;
+
+    &lt;insert id=&quot;insertStudent&quot;&gt;
+        insert into student(name,age) values(#&#123;name&#125;,#&#123;age&#125;)
+    &lt;/insert&gt;
+&lt;/mapper&gt;
+</code></pre>
+<p>7.写jsp页面</p>
+<pre><code class="html">&lt;%
+    String basePath = request.getScheme() + &quot;://&quot; +
+            request.getServerName() + &quot;:&quot; + request.getServerPort() +
+            request.getContextPath() + &quot;/&quot;;
+%&gt;
+&lt;base href=&quot;&lt;%=basePath%&gt;&quot; /&gt;
 </code></pre>
 
       </section>
@@ -202,7 +418,7 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/09/04/java%E5%A4%9A%E6%80%81%E5%AE%9E%E4%BE%8B/" itemprop="url">
+        <a href="/2022/09/04/%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E9%83%A8%E7%B1%BB%EF%BC%9F/" itemprop="url">
           <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
@@ -217,8 +433,8 @@ public class SingleInstance02 &#123;
     
     <div class="card-text">
       
-        <a href="/2022/08/31/hello-world/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">Hello World</h2>
+        <a href="/2022/09/04/JDBC%E6%8A%A5The%20server%20time%20zone%20value%20'%C3%96%C3%90%C2%B9%C3%BA%C2%B1%C3%AA%C3%97%C2%BC%C3%8A%C2%B1%C2%BC%C3%A4'%20is%20unrecognized%20%EF%BC%88%E6%97%B6%E5%8C%BA%E9%94%99%E8%AF%AF%EF%BC%89/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">(no title)</h2>
         </a>
       
       <div class="card-text--row">Older</div>
